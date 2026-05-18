@@ -1,1080 +1,543 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Setup 2026 — Danilo & João</title>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
-<style>
-:root {
-  --bg: #060b10;
-  --surface: #0c1520;
-  --surface2: #111d2e;
-  --surface3: #162236;
-  --border: #1c2e45;
-  --border2: #243a56;
-  --accent: #38bdf8;
-  --accent-glow: rgba(56,189,248,0.18);
-  --orange: #fb923c;
-  --orange-glow: rgba(251,146,60,0.18);
-  --green: #4ade80;
-  --green-glow: rgba(74,222,128,0.15);
-  --red: #f87171;
-  --text: #e2eaf4;
-  --text2: #7a98b8;
-  --text3: #3d5572;
-  --danilo: #38bdf8;
-  --joao: #fb923c;
-
-  --card-radius: 20px;
-  --transition: 0.28s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-html { scroll-behavior: smooth; }
-
-body {
-  font-family: 'Space Grotesk', sans-serif;
-  background: var(--bg);
-  color: var(--text);
-  min-height: 100vh;
-  overflow-x: hidden;
-  font-size: 15px;
-}
-
-/* ===== BACKGROUND AMBIENCE ===== */
-.bg-orbs {
-  position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden;
-}
-.bg-orbs::before {
-  content: '';
-  position: absolute;
-  width: 900px; height: 900px;
-  background: radial-gradient(circle, rgba(56,189,248,0.045) 0%, transparent 70%);
-  top: -200px; left: -200px;
-  border-radius: 50%;
-  animation: drift1 20s ease-in-out infinite alternate;
-}
-.bg-orbs::after {
-  content: '';
-  position: absolute;
-  width: 700px; height: 700px;
-  background: radial-gradient(circle, rgba(251,146,60,0.04) 0%, transparent 70%);
-  bottom: -100px; right: -100px;
-  border-radius: 50%;
-  animation: drift2 18s ease-in-out infinite alternate;
-}
-@keyframes drift1 { from { transform: translate(0,0); } to { transform: translate(80px,60px); } }
-@keyframes drift2 { from { transform: translate(0,0); } to { transform: translate(-60px,-80px); } }
-
-/* ===== ANIMATIONS ===== */
-@keyframes fadeUp { from { opacity:0; transform:translateY(28px); } to { opacity:1; transform:translateY(0); } }
-@keyframes scaleIn { from { opacity:0; transform:scale(0.94); } to { opacity:1; transform:scale(1); } }
-@keyframes pulse { 0%,100% { opacity:1; transform:scale(1); } 50% { opacity:0.5; transform:scale(0.85); } }
-@keyframes shimmer {
-  0% { background-position: -600px 0; }
-  100% { background-position: 600px 0; }
-}
-@keyframes float {
-  0%,100% { transform:translateY(0px); }
-  50% { transform:translateY(-6px); }
-}
-@keyframes spin { from { transform:rotate(0deg); } to { transform:rotate(360deg); } }
-@keyframes toastIn { from { opacity:0; transform:translateY(20px) scale(0.95); } to { opacity:1; transform:translateY(0) scale(1); } }
-
-/* ===== LAYOUT ===== */
-.wrap {
-  max-width: 1240px;
-  margin: 0 auto;
-  padding: 0 24px 60px;
-  position: relative;
-  z-index: 1;
-}
-
-/* ===== LOGIN PAGE ===== */
-#loginPage {
-  position: relative;
-  z-index: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  min-height: 100vh;
-  gap: 0;
-  padding: 40px 20px;
-  text-align: center;
-  animation: scaleIn 0.5s ease;
-}
-
-.login-eyebrow {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 11px;
-  letter-spacing: 5px;
-  color: var(--text3);
-  text-transform: uppercase;
-  margin-bottom: 28px;
-}
-
-.login-logo {
-  margin-bottom: 40px;
-}
-
-.login-logo-title {
-  font-size: clamp(64px, 13vw, 130px);
-  font-weight: 700;
-  line-height: 0.88;
-  letter-spacing: -5px;
-  color: var(--text);
-}
-
-.login-logo-year {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: clamp(14px, 3vw, 22px);
-  font-weight: 700;
-  letter-spacing: 10px;
-  background: linear-gradient(90deg, var(--accent), var(--green));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  margin-top: 6px;
-  display: block;
-}
-
-.login-divider {
-  width: 60px; height: 1px;
-  background: var(--border2);
-  margin: 28px auto 28px;
-}
-
-.login-prompt {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 12px;
-  color: var(--text3);
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  margin-bottom: 36px;
-}
-
-.user-cards {
-  display: flex;
-  gap: 20px;
-  flex-wrap: wrap;
-  justify-content: center;
-}
-
-.user-card {
-  background: var(--surface);
-  border: 1.5px solid var(--border);
-  border-radius: 24px;
-  padding: 40px 52px;
-  cursor: pointer;
-  transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
-  position: relative;
-  overflow: hidden;
-  min-width: 210px;
-}
-
-.user-card::before {
-  content: '';
-  position: absolute;
-  bottom: 0; left: 0; right: 0;
-  height: 3px;
-  opacity: 0;
-  transition: opacity 0.3s;
-}
-
-.user-card.d::before { background: linear-gradient(90deg, transparent, var(--danilo), transparent); }
-.user-card.j::before { background: linear-gradient(90deg, transparent, var(--joao), transparent); }
-
-.user-card::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  opacity: 0;
-  transition: opacity 0.3s;
-  pointer-events: none;
-}
-.user-card.d::after { background: radial-gradient(ellipse at 50% 0%, rgba(56,189,248,0.1), transparent 70%); }
-.user-card.j::after { background: radial-gradient(ellipse at 50% 0%, rgba(251,146,60,0.1), transparent 70%); }
-
-.user-card:hover { transform: translateY(-12px) scale(1.02); }
-.user-card.d:hover { border-color: rgba(56,189,248,0.5); box-shadow: 0 30px 70px rgba(56,189,248,0.2); }
-.user-card.j:hover { border-color: rgba(251,146,60,0.5); box-shadow: 0 30px 70px rgba(251,146,60,0.2); }
-.user-card:hover::before, .user-card:hover::after { opacity: 1; }
-
-.user-avatar {
-  width: 80px; height: 80px;
-  border-radius: 50%;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 28px; font-weight: 700;
-  margin: 0 auto 20px;
-  position: relative;
-  transition: transform 0.3s, box-shadow 0.3s;
-}
-
-.d .user-avatar {
-  background: rgba(56,189,248,0.1);
-  color: var(--danilo);
-  border: 1.5px solid rgba(56,189,248,0.25);
-  box-shadow: 0 0 0 0 rgba(56,189,248,0);
-}
-.j .user-avatar {
-  background: rgba(251,146,60,0.1);
-  color: var(--joao);
-  border: 1.5px solid rgba(251,146,60,0.25);
-  box-shadow: 0 0 0 0 rgba(251,146,60,0);
-}
-.user-card:hover .user-avatar { transform: scale(1.12); }
-.user-card.d:hover .user-avatar { box-shadow: 0 0 30px rgba(56,189,248,0.35); }
-.user-card.j:hover .user-avatar { box-shadow: 0 0 30px rgba(251,146,60,0.35); }
-
-.user-card h2 { font-size: 20px; font-weight: 700; letter-spacing: 3px; margin-bottom: 6px; }
-.user-card p { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--text3); letter-spacing: 1.5px; }
-
-/* ===== APP PAGE ===== */
-#appPage { display: none; animation: fadeUp 0.5s ease; }
-
-/* ===== HEADER ===== */
-.header {
-  position: sticky;
-  top: 0;
-  z-index: 100;
-  background: rgba(6,11,16,0.85);
-  backdrop-filter: blur(20px);
-  border-bottom: 1px solid var(--border);
-  padding: 14px 24px;
-  margin: 0 -24px 36px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 14px;
-  flex-wrap: wrap;
-}
-
-.header-left { display: flex; align-items: center; gap: 20px; }
-
-.header-brand {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: 3px;
-  color: var(--text3);
-}
-
-.header-brand span {
-  background: linear-gradient(90deg, var(--accent), var(--green));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-.user-badge {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  background: var(--surface);
-  border: 1px solid var(--border2);
-  border-radius: 100px;
-  padding: 5px 14px 5px 5px;
-}
-
-.badge-avatar {
-  width: 28px; height: 28px;
-  border-radius: 50%;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 11px; font-weight: 700; letter-spacing: 0.5px;
-}
-.badge-avatar.d { background: rgba(56,189,248,0.15); color: var(--danilo); }
-.badge-avatar.j { background: rgba(251,146,60,0.15); color: var(--joao); }
-.user-badge strong { font-size: 12px; letter-spacing: 2px; font-weight: 600; }
-
-.btn-logout {
-  background: transparent;
-  border: 1px solid var(--border2);
-  color: var(--text3);
-  border-radius: 10px;
-  padding: 7px 16px;
-  cursor: pointer;
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 10px;
-  letter-spacing: 1.5px;
-  text-transform: uppercase;
-  transition: all var(--transition);
-}
-.btn-logout:hover { color: var(--text); border-color: var(--text3); background: var(--surface2); }
-
-/* ===== STATS ===== */
-.stats-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 14px;
-  margin-bottom: 14px;
-}
-
-@media (max-width: 900px) { .stats-grid { grid-template-columns: repeat(2, 1fr); } }
-@media (max-width: 480px) { .stats-grid { grid-template-columns: 1fr 1fr; } }
-
-.stat-card {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--card-radius);
-  padding: 22px 22px 20px;
-  position: relative;
-  overflow: hidden;
-  transition: border-color var(--transition);
-}
-
-.stat-card::before {
-  content: '';
-  position: absolute;
-  top: 0; left: 20px; right: 20px;
-  height: 1px;
-}
-.stat-card.s-total::before { background: linear-gradient(90deg, transparent, var(--text3), transparent); }
-.stat-card.s-pago::before { background: linear-gradient(90deg, transparent, var(--green), transparent); }
-.stat-card.s-falta::before { background: linear-gradient(90deg, transparent, var(--orange), transparent); }
-.stat-card.s-items::before { background: linear-gradient(90deg, transparent, var(--accent), transparent); }
-
-.stat-icon {
-  font-size: 18px;
-  margin-bottom: 14px;
-  display: block;
-}
-
-.stat-label {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 9.5px;
-  letter-spacing: 2.5px;
-  color: var(--text3);
-  text-transform: uppercase;
-  margin-bottom: 8px;
-}
-
-.stat-value {
-  font-size: 24px;
-  font-weight: 700;
-  line-height: 1;
-  letter-spacing: -0.5px;
-}
-.stat-card.s-pago .stat-value { color: var(--green); }
-.stat-card.s-falta .stat-value { color: var(--orange); }
-.stat-card.s-items .stat-value { color: var(--accent); }
-
-/* ===== PROGRESS ===== */
-.progress-section {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--card-radius);
-  padding: 22px 24px;
-  margin-bottom: 40px;
-}
-
-.progress-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 14px;
-}
-
-.progress-label {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 10px;
-  letter-spacing: 3px;
-  color: var(--text3);
-  text-transform: uppercase;
-}
-
-.progress-pct {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 14px;
-  font-weight: 700;
-  color: var(--green);
-}
-
-.progress-track {
-  height: 8px;
-  background: var(--surface3);
-  border-radius: 100px;
-  overflow: hidden;
-  border: 1px solid var(--border);
-}
-
-.progress-fill {
-  height: 100%;
-  border-radius: 100px;
-  background: linear-gradient(90deg, var(--accent) 0%, var(--green) 100%);
-  transition: width 1s cubic-bezier(0.34, 1.56, 0.64, 1);
-  position: relative;
-}
-.progress-fill::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.3) 50%, transparent 100%);
-  background-size: 600px 100%;
-  animation: shimmer 2.5s infinite;
-}
-
-/* ===== SECTION TITLE ===== */
-.section-title {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 4px;
-  color: var(--text3);
-  text-transform: uppercase;
-  margin-bottom: 18px;
-  display: flex;
-  align-items: center;
-  gap: 14px;
-}
-.section-title::after { content: ''; flex: 1; height: 1px; background: var(--border); }
-
-/* ===== PRODUCTS GRID ===== */
-.products-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-  gap: 16px;
-  margin-bottom: 50px;
-}
-
-@media (max-width: 600px) { .products-grid { grid-template-columns: repeat(2, 1fr); } }
-@media (max-width: 400px) { .products-grid { grid-template-columns: 1fr; } }
-
-.product-card {
-  background: var(--surface);
-  border: 1.5px solid var(--border);
-  border-radius: var(--card-radius);
-  overflow: hidden;
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  transition: transform var(--transition), border-color var(--transition), box-shadow var(--transition);
-}
-
-.product-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 20px 50px rgba(0,0,0,0.5);
-}
-
-.product-card:not(.is-bought):not(.is-bought-other):hover {
-  border-color: rgba(56,189,248,0.3);
-}
-
-.product-card.is-bought {
-  border-color: rgba(74,222,128,0.4);
-}
-
-.product-card.is-bought-both {
-  border-color: rgba(74,222,128,0.5);
-}
-
-/* STATUS BADGES */
-.card-badges {
-  position: absolute;
-  top: 10px; right: 10px;
-  display: flex; flex-direction: column; gap: 4px; align-items: flex-end;
-  z-index: 3;
-}
-
-.card-badge {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 8px;
-  font-weight: 700;
-  padding: 3px 9px;
-  border-radius: 100px;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-  white-space: nowrap;
-}
-
-.badge-mine { background: var(--green); color: #000; }
-.badge-d { background: var(--danilo); color: #000; }
-.badge-j { background: var(--joao); color: #000; }
-.badge-both { background: linear-gradient(90deg, var(--danilo), var(--green)); color: #000; }
-
-/* PRODUCT IMAGE */
-.product-img-wrap {
-  background: #fff;
-  height: 140px;
-  display: flex; align-items: center; justify-content: center;
-  overflow: hidden;
-  position: relative;
-  flex-shrink: 0;
-}
-
-.product-img-wrap::after {
-  content: '';
-  position: absolute;
-  bottom: 0; left: 0; right: 0;
-  height: 40px;
-  background: linear-gradient(transparent, rgba(12,21,32,0.5));
-}
-
-.product-img-wrap img {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  padding: 10px;
-  transition: transform 0.4s ease;
-}
-.product-card:hover .product-img-wrap img { transform: scale(1.07); }
-
-/* PRODUCT BODY */
-.product-category {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 8.5px;
-  letter-spacing: 2px;
-  color: var(--text3);
-  text-transform: uppercase;
-  padding: 12px 14px 0;
-}
-
-.product-body {
-  padding: 8px 14px 14px;
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-}
-
-.product-name {
-  font-weight: 600;
-  font-size: 13.5px;
-  line-height: 1.3;
-  margin-bottom: 3px;
-  color: var(--text);
-}
-
-.product-full-name {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 9.5px;
-  color: var(--text3);
-  line-height: 1.4;
-  margin-bottom: 12px;
-}
-
-.product-price {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 18px;
-  font-weight: 700;
-  margin-bottom: 12px;
-  transition: color 0.3s;
-}
-.p-default { color: var(--accent); }
-.p-bought { color: var(--green); }
-
-/* ACTIONS */
-.product-actions { display: flex; gap: 8px; margin-top: auto; }
-
-.btn-buy {
-  flex: 1;
-  padding: 9px 10px;
-  border-radius: 11px;
-  border: 1.5px solid;
-  cursor: pointer;
-  font-family: 'Space Grotesk', sans-serif;
-  font-weight: 600;
-  font-size: 11.5px;
-  letter-spacing: 0.3px;
-  transition: all 0.2s;
-  display: flex; align-items: center; justify-content: center; gap: 5px;
-}
-
-.btn-buy.state-default {
-  background: transparent;
-  color: var(--accent);
-  border-color: rgba(56,189,248,0.3);
-}
-.btn-buy.state-default:hover {
-  background: var(--accent);
-  color: #000;
-  border-color: var(--accent);
-  box-shadow: 0 0 20px rgba(56,189,248,0.4);
-}
-
-.btn-buy.state-done {
-  background: rgba(74,222,128,0.08);
-  color: var(--green);
-  border-color: rgba(74,222,128,0.3);
-}
-.btn-buy.state-done:hover {
-  background: rgba(248,113,113,0.1);
-  color: var(--red);
-  border-color: rgba(248,113,113,0.3);
-}
-
-.btn-link {
-  width: 36px; height: 36px;
-  border-radius: 10px;
-  border: 1.5px solid var(--border2);
-  background: transparent;
-  cursor: pointer;
-  display: flex; align-items: center; justify-content: center;
-  color: var(--text3);
-  text-decoration: none;
-  transition: all 0.2s;
-  flex-shrink: 0;
-}
-.btn-link:hover {
-  background: var(--surface3);
-  color: var(--text);
-  border-color: var(--text3);
-  transform: scale(1.08);
-}
-
-/* ===== OTHER USER PANEL ===== */
-.other-section {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 24px;
-  overflow: hidden;
-  margin-bottom: 50px;
-}
-
-.other-header {
-  padding: 24px 26px;
-  border-bottom: 1px solid var(--border);
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  flex-wrap: wrap;
-}
-
-.live-dot {
-  width: 9px; height: 9px;
-  border-radius: 50%;
-  flex-shrink: 0;
-  animation: pulse 2s infinite;
-}
-.live-dot.d { background: var(--danilo); box-shadow: 0 0 10px var(--danilo); }
-.live-dot.j { background: var(--joao); box-shadow: 0 0 10px var(--joao); }
-
-.other-title { font-size: 15px; font-weight: 700; letter-spacing: 0.5px; }
-.other-tag {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 9px;
-  color: var(--text3);
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  margin-left: auto;
-}
-
-.other-stats {
-  display: flex;
-  gap: 1px;
-  background: var(--border);
-}
-
-.other-stat-pill {
-  flex: 1;
-  background: var(--surface);
-  padding: 18px 20px;
-  text-align: center;
-}
-
-.other-stat-pill .label {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 9px;
-  letter-spacing: 2px;
-  color: var(--text3);
-  text-transform: uppercase;
-  margin-bottom: 8px;
-}
-.other-stat-pill .val {
-  font-size: 22px; font-weight: 700;
-}
-.other-stat-pill.ob .val { color: var(--green); }
-.other-stat-pill.om .val { color: var(--orange); }
-.other-stat-pill.os .val { color: var(--accent); font-family: 'JetBrains Mono', monospace; font-size: 17px; }
-
-.other-lists {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 0;
-}
-
-.other-list-col {
-  padding: 22px 22px;
-}
-.other-list-col:first-child {
-  border-right: 1px solid var(--border);
-}
-
-.other-list-title {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 9px;
-  font-weight: 700;
-  letter-spacing: 3px;
-  color: var(--text3);
-  text-transform: uppercase;
-  margin-bottom: 14px;
-  padding-bottom: 10px;
-  border-bottom: 1px solid var(--border);
-}
-
-.other-item {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 8px 12px;
-  border-radius: 10px;
-  margin-bottom: 5px;
-  font-size: 12.5px;
-  animation: fadeUp 0.25s ease;
-}
-.other-item.bi { background: rgba(74,222,128,0.06); border: 1px solid rgba(74,222,128,0.12); }
-.other-item.mi { background: rgba(251,146,60,0.05); border: 1px solid rgba(251,146,60,0.1); }
-
-.other-item-price {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 10px;
-  color: var(--text3);
-  flex-shrink: 0;
-  margin-left: 8px;
-}
-
-.empty {
-  text-align: center;
-  padding: 28px 20px;
-  color: var(--text3);
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 11px;
-  letter-spacing: 1px;
-}
-
-@media (max-width: 600px) {
-  .other-lists { grid-template-columns: 1fr; }
-  .other-list-col:first-child { border-right: none; border-bottom: 1px solid var(--border); }
-  .other-stats { flex-wrap: wrap; }
-}
-
-/* ===== TOAST ===== */
-.toast {
-  position: fixed;
-  bottom: 28px;
-  right: 28px;
-  padding: 12px 20px;
-  border-radius: 14px;
-  font-weight: 600;
-  font-size: 13.5px;
-  transform: translateY(60px);
-  opacity: 0;
-  transition: opacity 0.3s, transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-  z-index: 9999;
-  pointer-events: none;
-  display: flex; align-items: center; gap: 8px;
-  border: 1px solid;
-  backdrop-filter: blur(8px);
-}
-.toast.green {
-  background: rgba(74,222,128,0.12);
-  border-color: rgba(74,222,128,0.3);
-  color: var(--green);
-}
-.toast.orange {
-  background: rgba(251,146,60,0.1);
-  border-color: rgba(251,146,60,0.25);
-  color: var(--orange);
-}
-.toast.show { transform: translateY(0); opacity: 1; }
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Controle PC - Danilo & João</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: Arial, Helvetica, sans-serif; }
+
+    :root {
+      --dark: #020617;
+      --card: rgba(255, 255, 255, 0.94);
+      --line: #e2e8f0;
+      --muted: #64748b;
+      --green: #16a34a;
+      --blue: #2563eb;
+      --purple: #7c3aed;
+    }
+
+    body {
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at top left, rgba(124, 58, 237, .35), transparent 32%),
+        radial-gradient(circle at top right, rgba(37, 99, 235, .30), transparent 30%),
+        linear-gradient(135deg, #020617, #111827 50%, #020617);
+      color: #0f172a;
+      padding: 20px;
+    }
+
+    .hidden { display: none !important; }
+    .container { max-width: 1220px; margin: 0 auto; }
+
+    .login-screen {
+      position: fixed;
+      inset: 0;
+      z-index: 999;
+      display: grid;
+      place-items: center;
+      padding: 20px;
+      background:
+        radial-gradient(circle at 20% 20%, rgba(124, 58, 237, .45), transparent 30%),
+        radial-gradient(circle at 80% 25%, rgba(37, 99, 235, .40), transparent 35%),
+        linear-gradient(135deg, #020617, #111827);
+    }
+
+    .login-box {
+      width: min(760px, 100%);
+      color: white;
+      text-align: center;
+      padding: 34px;
+      border-radius: 34px;
+      background: rgba(255, 255, 255, .10);
+      border: 1px solid rgba(255, 255, 255, .18);
+      backdrop-filter: blur(18px);
+      box-shadow: 0 30px 90px rgba(0,0,0,.45);
+    }
+
+    .login-box h1 { font-size: clamp(34px, 6vw, 62px); margin-bottom: 10px; letter-spacing: -1.5px; }
+    .login-box p { color: #cbd5e1; line-height: 1.6; margin-bottom: 24px; }
+
+    .login-options { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+
+    .login-card {
+      border: 1px solid rgba(255,255,255,.22);
+      background: rgba(255,255,255,.10);
+      color: white;
+      padding: 28px;
+      border-radius: 28px;
+      cursor: pointer;
+      transition: .22s;
+      font-weight: 900;
+      font-size: 20px;
+    }
+
+    .login-card:hover { transform: translateY(-5px); background: rgba(255,255,255,.16); }
+
+    .avatar {
+      width: 78px;
+      height: 78px;
+      border-radius: 24px;
+      display: grid;
+      place-items: center;
+      margin: 0 auto 14px;
+      color: white;
+      font-size: 34px;
+      font-weight: 900;
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,.25), 0 16px 30px rgba(0,0,0,.30);
+    }
+
+    .avatar.d { background: linear-gradient(135deg, #2563eb, #7c3aed); }
+    .avatar.j { background: linear-gradient(135deg, #16a34a, #14b8a6); }
+
+    header {
+      position: relative;
+      overflow: hidden;
+      background: linear-gradient(135deg, rgba(255,255,255,.14), rgba(255,255,255,.07));
+      border: 1px solid rgba(255,255,255,.16);
+      color: white;
+      padding: 30px;
+      border-radius: 34px;
+      margin-bottom: 18px;
+      box-shadow: 0 24px 60px rgba(0,0,0,.22);
+      backdrop-filter: blur(18px);
+    }
+
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255,255,255,.13);
+      padding: 8px 14px;
+      border-radius: 999px;
+      font-size: 14px;
+      margin-bottom: 12px;
+    }
+
+    h1 { font-size: clamp(34px, 5vw, 58px); margin-bottom: 10px; letter-spacing: -1.5px; }
+    header p { color: #cbd5e1; max-width: 760px; line-height: 1.55; }
+
+    .top-row { display: flex; justify-content: space-between; gap: 18px; align-items: flex-start; }
+    .current-user { text-align: right; min-width: 170px; }
+    .current-user small { color: #cbd5e1; }
+    .current-user b { display: block; font-size: 22px; }
+
+    .top-actions { margin-top: 22px; display: flex; gap: 12px; flex-wrap: wrap; }
+
+    button, select, a.button, .fake-button {
+      border: none;
+      cursor: pointer;
+      border-radius: 18px;
+      padding: 12px 16px;
+      font-weight: 800;
+      text-decoration: none;
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
+      transition: .2s;
+      font-size: 14px;
+    }
+
+    .btn-light { background: white; color: #020617; }
+    .btn-dark { background: #020617; color: white; }
+    .btn-gray { background: #f1f5f9; color: #0f172a; }
+    .btn-green { background: #16a34a; color: white; }
+    .btn-blue { background: linear-gradient(135deg, #2563eb, #7c3aed); color: white; }
+    button:hover, a.button:hover { transform: translateY(-1px); opacity: .94; }
+
+    .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 16px; }
+    .stat-card, .person-card, .filters, .part-card, .check-card {
+      background: var(--card);
+      border: 1px solid rgba(226,232,240,.95);
+      border-radius: 28px;
+      box-shadow: 0 16px 42px rgba(0,0,0,.16);
+      backdrop-filter: blur(12px);
+    }
+
+    .stat-card { padding: 20px; }
+    .stat-card small { color: var(--muted); font-weight: 800; }
+    .stat-card strong { display: block; font-size: 25px; margin-top: 8px; }
+
+    .people { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin-bottom: 16px; }
+    .person-card { padding: 20px; }
+    .person-top { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 14px; }
+    .person-name { display: flex; align-items: center; gap: 12px; }
+    .mini-avatar { width: 42px; height: 42px; border-radius: 15px; font-size: 20px; }
+    .badge { background: #f1f5f9; padding: 7px 12px; border-radius: 999px; font-size: 13px; font-weight: 900; color: #334155; }
+    .progress { height: 13px; border-radius: 999px; background: #e2e8f0; overflow: hidden; margin-bottom: 14px; }
+    .progress div { height: 100%; background: linear-gradient(90deg, #2563eb, #7c3aed); width: 0%; }
+    .mini-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; text-align: center; }
+    .mini-grid div { background: #f8fafc; border-radius: 18px; padding: 12px; }
+    .mini-grid small { display: block; color: var(--muted); margin-bottom: 4px; font-weight: 700; }
+
+    .checklist { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; margin-bottom: 16px; }
+    .check-card { padding: 18px; }
+    .check-card h3 { margin-bottom: 8px; font-size: 18px; }
+    .check-card p { color: #475569; line-height: 1.45; font-size: 14px; }
+    .ok { border-color: #86efac; background: linear-gradient(135deg, #f0fdf4, #ffffff); }
+    .warn { border-color: #fbbf24; background: linear-gradient(135deg, #fffbeb, #ffffff); }
+
+    .filters { display: flex; flex-wrap: wrap; gap: 10px; padding: 12px; margin-bottom: 16px; align-items: center; }
+    .filter-btn.active { background: #020617; color: white; }
+    .filters .spacer { flex: 1; }
+
+    .parts { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+    .part-card { padding: 16px; transition: .22s; overflow: hidden; }
+    .part-card.bought { border-color: #86efac; background: linear-gradient(135deg, #f0fdf4, #ffffff); }
+    .part-main { display: flex; gap: 16px; }
+    .image-box { width: 126px; height: 126px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 24px; display: flex; justify-content: center; align-items: center; overflow: hidden; flex-shrink: 0; }
+    .image-box img { width: 100%; height: 100%; object-fit: contain; padding: 8px; }
+    .tags { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 9px; }
+    .tag { background: #f1f5f9; color: #334155; font-size: 12px; font-weight: 900; padding: 6px 10px; border-radius: 999px; }
+    .tag.green { background: #dcfce7; color: #166534; }
+    .tag.blue { background: #dbeafe; color: #1d4ed8; }
+    .part-title { font-size: 17px; line-height: 1.28; margin-bottom: 9px; }
+    .price { font-size: 25px; font-weight: 950; letter-spacing: -1px; }
+    .part-actions { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-top: 14px; }
+    .fake-button { cursor: default; }
+    .note { margin-top: 18px; color: #cbd5e1; font-size: 14px; line-height: 1.55; }
+    .note b { color: white; }
+
+    @media (max-width: 920px) {
+      .stats, .people, .parts, .checklist { grid-template-columns: 1fr; }
+      .top-row { flex-direction: column; }
+      .current-user { text-align: left; }
+    }
+
+    @media (max-width: 620px) {
+      body { padding: 12px; }
+      header, .login-box { padding: 22px; border-radius: 26px; }
+      .login-options { grid-template-columns: 1fr; }
+      .part-main { flex-direction: column; }
+      .image-box { width: 100%; height: 190px; }
+      .part-actions { grid-template-columns: 1fr; }
+      .mini-grid { grid-template-columns: 1fr; }
+    }
+  </style>
 </head>
 <body>
-
-<div class="bg-orbs"></div>
-
-<!-- ===== LOGIN ===== -->
-<div id="loginPage">
-  <div class="login-eyebrow">// controle de compras</div>
-  <div class="login-logo">
-    <div class="login-logo-title">SETUP</div>
-    <span class="login-logo-year">— 2 0 2 6 —</span>
-  </div>
-  <div class="login-divider"></div>
-  <div class="login-prompt">Escolha seu perfil</div>
-  <div class="user-cards">
-    <div class="user-card d" onclick="iniciar('DANILO')">
-      <div class="user-avatar">D</div>
-      <h2>DANILO</h2>
-      <p>clique para entrar</p>
-    </div>
-    <div class="user-card j" onclick="iniciar('JOAO')">
-      <div class="user-avatar">J</div>
-      <h2>JOÃO</h2>
-      <p>clique para entrar</p>
+  <div class="login-screen" id="loginScreen">
+    <div class="login-box">
+      <div class="chip">⚡ Entrar no controle</div>
+      <h1>Quem está entrando?</h1>
+      <p>Escolha Danilo ou João. Cada um tem um computador completo separado, com suas próprias peças compradas e faltantes.</p>
+      <div class="login-options">
+        <button class="login-card" type="button" onclick="entrarComo('Danilo')">
+          <div class="avatar d">D</div>
+          Danilo
+        </button>
+        <button class="login-card" type="button" onclick="entrarComo('Joao')">
+          <div class="avatar j">J</div>
+          João
+        </button>
+      </div>
     </div>
   </div>
-</div>
 
-<!-- ===== APP ===== -->
-<div id="appPage">
-  <div class="wrap">
-
-    <div class="header">
-      <div class="header-left">
-        <div class="header-brand">SETUP<span>2026</span></div>
-        <div class="user-badge">
-          <div class="badge-avatar d" id="badgeDot">D</div>
-          <strong id="badgeName">DANILO</strong>
+  <div class="container">
+    <header>
+      <div class="top-row">
+        <div>
+          <span class="chip">🖥️ 2 PCs completos</span>
+          <h1>PC Danilo & João</h1>
+          <p>Cada pessoa tem uma build completa. Marque as peças compradas, veja quanto falta e abra os links de cada produto.</p>
+        </div>
+        <div class="current-user">
+          <small>Logado como</small>
+          <b id="usuarioAtual">---</b>
         </div>
       </div>
-      <button class="btn-logout" onclick="logout()">↩ trocar usuário</button>
-    </div>
+      <div class="top-actions">
+        <button class="btn-light" type="button" onclick="trocarUsuario()">Trocar usuário</button>
+        <button class="btn-light" type="button" onclick="resetarTudo()">Resetar tudo</button>
+        <button class="btn-light" type="button" onclick="marcarTudo(false)">Desmarcar compras</button>
+      </div>
+    </header>
 
-    <div class="stats-grid">
-      <div class="stat-card s-total">
-        <span class="stat-icon">💰</span>
-        <div class="stat-label">Total do Setup</div>
-        <div class="stat-value" id="statTotal">R$ 0,00</div>
-      </div>
-      <div class="stat-card s-pago">
-        <span class="stat-icon">✅</span>
-        <div class="stat-label">Já Pago (eu)</div>
-        <div class="stat-value" id="statPago">R$ 0,00</div>
-      </div>
-      <div class="stat-card s-falta">
-        <span class="stat-icon">🛒</span>
-        <div class="stat-label">Ainda Falta (eu)</div>
-        <div class="stat-value" id="statFalta">R$ 0,00</div>
-      </div>
-      <div class="stat-card s-items">
-        <span class="stat-icon">📦</span>
-        <div class="stat-label">Comprados (eu)</div>
-        <div class="stat-value" id="statItems">0 / 9</div>
-      </div>
-    </div>
+    <section class="stats">
+      <div class="stat-card"><small>Total dos 2 PCs</small><strong id="totalBuild">R$ 0,00</strong></div>
+      <div class="stat-card"><small>Já comprado</small><strong id="totalComprado">R$ 0,00</strong></div>
+      <div class="stat-card"><small>Falta comprar</small><strong id="totalFalta">R$ 0,00</strong></div>
+      <div class="stat-card"><small>Peças compradas</small><strong id="pecasCompradas">0/0</strong></div>
+    </section>
 
-    <div class="progress-section">
-      <div class="progress-header">
-        <div class="progress-label">Meu Progresso</div>
-        <div class="progress-pct" id="progPct">0%</div>
-      </div>
-      <div class="progress-track">
-        <div class="progress-fill" id="progFill" style="width:0%"></div>
-      </div>
-    </div>
+    <section class="people" id="peopleCards"></section>
+    <section class="checklist" id="compatChecklist"></section>
 
-    <div class="section-title">Componentes</div>
-    <div class="products-grid" id="productsGrid"></div>
+    <nav class="filters">
+      <button class="btn-gray filter-btn active" type="button" onclick="filtrar('Todos', this)">Todos</button>
+      <button class="btn-gray filter-btn" type="button" onclick="filtrar('Danilo', this)">Danilo</button>
+      <button class="btn-gray filter-btn" type="button" onclick="filtrar('Joao', this)">João</button>
+      <span class="spacer"></span>
+      <button class="btn-blue" type="button" onclick="filtrarMeuUsuario()">Ver minhas peças</button>
+    </nav>
 
-    <div class="section-title" id="otherSectionTitle">Status do Outro</div>
-    <div class="other-section">
-      <div class="other-header">
-        <div class="live-dot j" id="otherDot"></div>
-        <div class="other-title" id="otherTitle">João</div>
-        <div class="other-tag">atualizado em tempo real</div>
-      </div>
-      <div class="other-stats">
-        <div class="other-stat-pill ob">
-          <div class="label">Comprados</div>
-          <div class="val" id="otherBoughtCount">0</div>
-        </div>
-        <div class="other-stat-pill om">
-          <div class="label">Faltando</div>
-          <div class="val" id="otherMissingCount">9</div>
-        </div>
-        <div class="other-stat-pill os">
-          <div class="label">Já Gastou</div>
-          <div class="val" id="otherSpent">R$ 0,00</div>
-        </div>
-      </div>
-      <div class="other-lists">
-        <div class="other-list-col">
-          <div class="other-list-title">✅ Já comprou</div>
-          <div id="otherBoughtList"></div>
-        </div>
-        <div class="other-list-col">
-          <div class="other-list-title">🛒 Ainda falta</div>
-          <div id="otherMissingList"></div>
-        </div>
-      </div>
-    </div>
+    <section class="parts" id="partsList"></section>
 
+    <p class="note">
+      Observação: o site salva no próprio navegador com <b>localStorage</b>. Se abrir em outro celular/PC, os marcados não aparecem automaticamente.
+    </p>
   </div>
-</div>
 
-<div class="toast green" id="toast">✅ Marcado!</div>
+  <script>
+    const dinheiro = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' });
 
-<script>
-const produtos = [
-  { key:"cpu",  categoria:"Processador",    nome:"AMD Ryzen 7 5700X",             nomeCompleto:"Processador AMD Ryzen 7 5700X, 3.4GHz (4.6GHz Max Turbo), Cache 36MB, AM4, Sem Vídeo - 100-100000926WOF",               preco:1377.00,  loja:"KaBuM",  url:"https://www.kabum.com.br/produto/366827/processador-amd-ryzen-7-5700x-3-4ghz-cache-32mb-8-nucleos-16-threads-100-100000926wofam4",                                                                                             img:"https://i.postimg.cc/Y9vfhhsr/Processador-AMD-Ryzen-7-5700X-3-4GHz-Cache-32MB-8-N-cleos-16-Threads-Sem-Cooler-100-100000926WOFAM4.webp" },
-  { key:"mobo", categoria:"Placa-Mãe",      nome:"B550M Aorus Elite",         nomeCompleto:"Placa-Mãe Gigabyte B550M Aorus Elite",                                                            preco:739.99,  loja:"KaBuM",  url:"https://www.kabum.com.br/produto/114781/placa-mae-gigabyte-b550m-aorus-elite-rev-1-3-amd-am4-micro-atx-ddr4-preto-b550m-aorus-elite",                                                                                                                     img:"https://i.postimg.cc/MHR7mgxf/placa-mae-gigabyte-b550m-aorus-elite-amd-am4-micro-atx-ddr4-1594908595-gg.webp" },
-  { key:"ram",  categoria:"Memória RAM",     nome:"T-Force Vulcan 8GB",       nomeCompleto:"TeamGroup T-Force Vulcan 8GB DDR4 3200MHz CL16 Branca",                                               preco:429.99,  loja:"Pichau", url:"https://www.pichau.com.br/memoria-team-group-t-force-vulcan-pichau-8gb-1x8-ddr4-3200mhz-c16-branca-rtb-tlpbd48g3200hc16f01",                                                                                                                          img:"https://i.postimg.cc/RZv7wPDg/tlpbd48g3200hc16f01.jpg" },
-  { key:"gpu",  categoria:"Placa de Vídeo", nome:"RTX 5050 8GB LP",          nomeCompleto:"Gigabyte GeForce RTX 5050 Low Profile 8GB GDDR6 DLSS",                                               preco:1969.90, loja:"KaBuM",  url:"https://www.kabum.com.br/produto/887252/placa-de-video-rtx-5050-low-profile-8g-gigabyte-nvidia-geforce-8gb-gddr6-128bits-rgb-dlss-ray-tracing-gv-n5050oc-8gl",                                                                                          img:"https://i.postimg.cc/1ztDj8PG/placa-de-video-rtx-5050-low-profile-8g-gigabyte-nvidia-geforce-8gb-gddr6-128bits-rgb-dlss-ray-tracin.webp" },
-  { key:"ssd",  categoria:"NVMe SSD",       nome:"SSD Kingston Nv3 500 Gb Nvme M.2 2280",       nomeCompleto:"SSD Kingston Nv3 500 Gb Nvme M.2 2280",                                                      preco:688.05,  loja:"KaBuM",  url:"https://www.kabum.com.br/produto/632571/ssd-500gb-m-2-nvme-pcie-4-5000mb-s-leit-3000mb-s-grav-nv3-snv3s-500g-kingston",                                                                                                                      img:"https://i.postimg.cc/kGr8Gw8q/SSD-Kingston-Nv3-500-Gb-Nvme-M-2-2280-Leitura-5000mb-s-Grava-o-6000mb-s-Snv3s-500g-1773254935.webp" }, 
-  { key:"gab",  categoria:"Gabinete",       nome:"Husky Dome 210",           nomeCompleto:"Gabinete Gamer Husky Dome 210 Mini Tower M-ATX Vidro Branco",                                         preco:189.99,  loja:"KaBuM",  url:"https://www.kabum.com.br/produto/609390/gabinete-gamer-husky-dome-210-mini-tower-m-atx-lateral-e-frontal-em-vidro-sem-fans-branco-hgn210br",                                                                                                           img:"https://i.postimg.cc/VL8ncGmj/gabinete-gamer-husky-dome-210-mini-tower-m-atx-lateral-e-frontal-em-vidro-branco-hgn210br-1750417452.webp" },
-  { key:"psu",  categoria:"Fonte",          nome:"Husky Sledger 850W Gold",  nomeCompleto:"Fonte Husky Sledger 850W 80 Plus Gold Full Modular PFC Ativo Bivolt HFN850PT",                        preco:559.99,  loja:"KaBuM",  url:"https://www.kabum.com.br/produto/603225/fonte-husky-sledger-850w-80-plus-gold-cybenetics-gold-pfc-ativo-full-modular-bivolt-hfn850pt",                                                                                                                 img:"https://i.postimg.cc/hG6QZM2X/fonte-husky-sledger-850w-80-plus-gold-cybenetics-gold-pfc-ativo-full-modular-bivolt-hfn850pt-1732625.webp" },
-  { key:"fan",  categoria:"Fans (x3)",      nome:"Ventoinha Rise Mode Magneto Pro, 120mm, ARGB,","nomeCompleto":"Ventoinha Rise Mode Magneto Pro, 120mm, ARGB,",                                               preco:52.99,   loja:"KaBuM",  url:"https://www.kabum.com.br/produto/572883/ventoinha-rise-mode-magneto-pro-120mm-argb-branco-reverse-rm-maproi-argb-w-rv",                                                                                                                  img:"https://i.postimg.cc/ydRgM9Gt/ventoinha-rise-mode-magneto-pro-120mm-argb-branco-reverse-rm-maproi-argb-w-rv-1732554015-gg.webp" },
-  { key:"wc",   categoria:"Water Cooler",   nome:"Husky Icy Comet 360mm",    nomeCompleto:"Water Cooler Husky Icy Comet ARGB 360mm AMD e Intel Branco HWT750BR",                                 preco:299.99,  loja:"KaBuM",  url:"https://www.kabum.com.br/produto/593867/water-cooler-husky-icy-comet-iluminacao-argb-360mm-amd-e-intel-branco-hwt750br",                                                                                                                               img:"https://i.postimg.cc/J7bHKNJS/water-cooler-husky-icy-comet-iluminacao-argb-360mm-amd-e-intel-branco-hwt750br-1758819967-gg.webp" }
-];
+    const buildBase = [
+      {
+        codigo: 'cpu', categoria: 'Processador', nome: 'AMD Ryzen 5 5600GT, 6-Core, 12-Threads, AM4', loja: 'Pichau', preco: 817.99,
+        link: 'https://www.pichau.com.br/processador-amd-ryzen-5-5600gt-6-core-12-threads-3-6ghz-4-6ghz-turbo-cache-19mb-am4-100-100001488box',
+        imagem: 'https://media.pichau.com.br/media/catalog/product/cache/2f958555330323e505eba7ce930bdf27/1/0/100-100001488box.jpg'
+      },
+      {
+        codigo: 'ram1', categoria: 'Memória RAM', nome: 'Team Group T-Force Vulcan Pichau 8GB DDR4 3200MHz C16 Branca', loja: 'Pichau', preco: 399.99,
+        link: 'https://www.pichau.com.br/memoria-team-group-t-force-vulcan-pichau-8gb-1x8gb-ddr4-3200mhz-c16-branca-rtb-tlpbd48g3200hc16f01',
+        imagem: 'https://media.pichau.com.br/media/catalog/product/cache/2f958555330323e505eba7ce930bdf27/t/l/tlpbd48g3200hc16f01.jpg'
+      },
+      {
+        codigo: 'ram2', categoria: 'Memória RAM', nome: 'Team Group T-Force Vulcan Pichau 8GB DDR4 3200MHz C16 Branca', loja: 'Pichau', preco: 399.99,
+        link: 'https://www.pichau.com.br/memoria-team-group-t-force-vulcan-pichau-8gb-1x8gb-ddr4-3200mhz-c16-branca-rtb-tlpbd48g3200hc16f01',
+        imagem: 'https://media.pichau.com.br/media/catalog/product/cache/2f958555330323e505eba7ce930bdf27/t/l/tlpbd48g3200hc16f01.jpg'
+      },
+      {
+        codigo: 'placa-mae', categoria: 'Placa-mãe', nome: 'MSI B550M Pro-VDH WiFi, AM4, mATX, DDR4', loja: 'KaBuM!', preco: 729.99,
+        link: 'https://www.kabum.com.br/produto/114338/placa-mae-msi-b550m-pro-vdh-wifi-amd-am4-matx-ddr4-preto-b550m-pro-vdh-wifi',
+        imagem: 'https://images8.kabum.com.br/produtos/fotos/114338/placa-mae-msi-b550m-pro-vdh-wifi-amd-am4-matx_1594996441_p.jpg'
+      },
+      {
+        codigo: 'ssd', categoria: 'SSD', nome: 'Kingston NV3 1TB M.2 2280 PCIe 4.0 NVMe', loja: 'KaBuM!', preco: 888.99,
+        link: 'https://www.kabum.com.br/produto/621162/ssd-kingston-nv3-1-tb-m-2-2280-pcie-4-0-x4-nvme-leitura-6000-mb-s-gravacao-4000-mb-s-azul-snv3s-1000g',
+        imagem: 'https://images2.kabum.com.br/produtos/fotos/621162/ssd-pcie-kingston-nv3-1-tb-m-2-2280-nvme-leitura-6000-mb-s-e-gravacao-4000-mb-s-snv3s-1000g_1726082185_p.jpg'
+      },
+      {
+        codigo: 'watercooler', categoria: 'Water cooler', nome: 'Pichau Aqua 360X, ARGB, 360mm, Preto', loja: 'Pichau', preco: 238.99,
+        link: 'https://www.pichau.com.br/water-cooler-pichau-aqua-360x-argb-360mm-preto-pch-aqa360x-bk01',
+        imagem: 'https://media.pichau.com.br/media/catalog/product/cache/2f958555330323e505eba7ce930bdf27/p/c/pch-aqa360x-bk01.jpg'
+      },
+      {
+        codigo: 'gpu', categoria: 'Placa de vídeo', nome: 'ASRock Radeon RX 7600 Challenger OC, 8GB GDDR6, 128-bit', loja: 'Pichau', preco: 1619.99,
+        link: 'https://www.pichau.com.br/placa-de-video-asrock-radeon-rx-7600-challenger-oc-8gb-gddr6-128-bit-90-ga41zz-00uanf?utm_source=chatgpt.com',
+        imagem: 'https://media.pichau.com.br/media/catalog/product/cache/2f958555330323e505eba7ce930bdf27/9/0/90-ga41zz-00uanf4.jpg'
+      },
+      {
+        codigo: 'fonte', categoria: 'Fonte', nome: 'Pichau Nidus 550L, 550W, 80 Plus Bronze', loja: 'Pichau', preco: 245.99,
+        link: 'https://www.pichau.com.br/fonte-pichau-nidus-550l-550w-80-plus-bronze-preto-pg-ndl550-01br',
+        imagem: 'https://media.pichau.com.br/media/catalog/product/cache/2f958555330323e505eba7ce930bdf27/p/g/pg-ndl550-01br.jpg'
+      },
+      {
+        codigo: 'gabinete', categoria: 'Gabinete', nome: 'Husky Dome 210, Mini Tower M-ATX, lateral e frontal em vidro, sem fans, preto', loja: 'KaBuM!', preco: 169.99,
+        link: 'https://www.kabum.com.br/produto/609389/gabinete-gamer-husky-dome-210-mini-tower-m-atx-lateral-e-frontal-em-vidro-sem-fans-preto-hgn210pt',
+        imagem: 'https://images9.kabum.com.br/produtos/fotos/609389/gabinete-gamer-husky-dome-210-mini-tower-m-atx-lateral-e-frontal-em-vidro-preto-hgn210pt_1750416137_p.jpg'
+      },
+      {
+        codigo: 'kit-fan', categoria: 'Kit fans', nome: 'Kit 4 Fan Cooler com controladora e controle remoto', loja: 'KaBuM!', preco: 134.40,
+        link: 'https://www.kabum.com.br/produto/768981/kit-4-fan-cooler-com-controladora-e-controle-remoto',
+        imagem: 'https://images1.kabum.com.br/produtos/fotos/sync_mirakl/768981/small/KIT-4-FAN-COOLER-COM-CONTROLADORA-E-CONTROLE-REMOTO_1768496918.png'
+      }
+    ];
 
-// Calcular total real
-const TOTAL = produtos.reduce((acc, p) => acc + p.preco, 0);
-
-function getState(user) {
-  try { return JSON.parse(localStorage.getItem("setup2026_" + user) || "{}"); } catch(e) { return {}; }
-}
-function setState(user, state) {
-  localStorage.setItem("setup2026_" + user, JSON.stringify(state));
-}
-
-let currentUser = "";
-
-function iniciar(nome) {
-  currentUser = nome;
-  document.getElementById("loginPage").style.display = "none";
-  document.getElementById("appPage").style.display = "block";
-
-  const isD = nome === "DANILO";
-  const dot = document.getElementById("badgeDot");
-  dot.textContent = nome[0];
-  dot.className = "badge-avatar " + (isD ? "d" : "j");
-  document.getElementById("badgeName").textContent = nome;
-
-  const otherName = isD ? "João Antonio" : "Danilo";
-  document.getElementById("otherSectionTitle").textContent = "Status de " + otherName;
-  document.getElementById("otherTitle").textContent = otherName;
-  document.getElementById("otherDot").className = "live-dot " + (isD ? "j" : "d");
-
-  renderProducts();
-  renderOther();
-}
-
-function logout() {
-  currentUser = "";
-  document.getElementById("appPage").style.display = "none";
-  document.getElementById("loginPage").style.display = "flex";
-}
-
-function renderProducts() {
-  const grid = document.getElementById("productsGrid");
-  grid.innerHTML = "";
-
-  const other = currentUser === "DANILO" ? "JOAO" : "DANILO";
-  const otherLabel = other === "DANILO" ? "DANILO" : "JOÃO";
-  const otherKey = other === "DANILO" ? "d" : "j";
-  const myState = getState(currentUser);
-  const otherState = getState(other);
-
-  produtos.forEach((p, i) => {
-    const isMine = !!myState[p.key];
-    const isOther = !!otherState[p.key];
-
-    // Build badge html
-    let badges = "";
-    if (isMine && isOther) {
-      badges = `<div class="card-badge badge-both">✓ Ambos compraram</div>`;
-    } else if (isMine) {
-      badges = `<div class="card-badge badge-mine">✓ Eu comprei</div>`;
-      if (isOther) badges += `<div class="card-badge badge-${otherKey}">${otherLabel} ✓</div>`;
-    } else if (isOther) {
-      badges = `<div class="card-badge badge-${otherKey}">${otherLabel} comprou</div>`;
+    function criarPecasOriginais() {
+      return ['Danilo', 'Joao'].flatMap(pessoa =>
+        buildBase.map(item => ({
+          ...item,
+          id: pessoa + '-' + item.codigo,
+          pessoa: pessoa,
+          comprado: false
+        }))
+      );
     }
 
-    const priceClass = isMine ? "p-bought" : "p-default";
-    const cardClass = "product-card" + (isMine && isOther ? " is-bought-both" : isMine ? " is-bought" : "");
+    let usuario = '';
+    let filtroAtual = 'Todos';
+    let pecas = carregarPecas();
 
-    let btn = "";
-    if (isMine) {
-      btn = `<button class="btn-buy state-done" onclick="desmarcar('${p.key}')">✓ Comprado — desfazer</button>`;
-    } else {
-      btn = `<button class="btn-buy state-default" onclick="comprar('${p.key}', ${i})">Marcar comprado</button>`;
+    function carregarPecas() {
+      const originais = criarPecasOriginais();
+      const salvo = localStorage.getItem('controlePC_v2');
+      if (!salvo) return originais;
+
+      try {
+        const antigas = JSON.parse(salvo);
+        const antigasPorId = Object.fromEntries(antigas.map(p => [p.id, p]));
+        return originais.map(p => ({ ...p, comprado: antigasPorId[p.id]?.comprado || false }));
+      } catch (erro) {
+        return originais;
+      }
     }
 
-    grid.innerHTML += `
-      <div class="${cardClass}">
-        <div class="card-badges">${badges}</div>
-        <div class="product-img-wrap">
-          <img src="${p.img}" alt="${p.nome}" loading="lazy" onerror="this.src='https://placehold.co/300x140/111d2e/3d5572?text=Produto'">
-        </div>
-        <div class="product-category">${p.categoria} · ${p.loja}</div>
-        <div class="product-body">
-          <div class="product-name">${p.nome}</div>
-          <div class="product-full-name">${p.nomeCompleto}</div>
-          <div class="product-price ${priceClass}">R$ ${fmtBRL(p.preco)}</div>
-          <div class="product-actions">
-            ${btn}
-            <a href="${p.url}" target="_blank" class="btn-link" title="Ver na loja">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
-            </a>
+    function salvar() {
+      localStorage.setItem('controlePC_v2', JSON.stringify(pecas));
+    }
+
+    function nomeBonito(nome) {
+      return nome === 'Joao' ? 'João' : nome;
+    }
+
+    function entrarComo(nome) {
+      usuario = nome;
+      document.getElementById('usuarioAtual').textContent = nomeBonito(nome);
+      document.getElementById('loginScreen').classList.add('hidden');
+      filtroAtual = nome;
+      atualizarBotoesFiltro(nome);
+      renderizar();
+    }
+
+    function trocarUsuario() {
+      document.getElementById('loginScreen').classList.remove('hidden');
+    }
+
+    function atualizarBotoesFiltro(filtro) {
+      document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+      document.querySelectorAll('.filter-btn').forEach(btn => {
+        if (btn.dataset.filtro === filtro) btn.classList.add('active');
+      });
+    }
+
+    function filtrar(filtro, botao) {
+      filtroAtual = filtro;
+      document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+      botao.classList.add('active');
+      renderizarPecas();
+    }
+
+    function filtrarMeuUsuario() {
+      if (!usuario) return trocarUsuario();
+      filtroAtual = usuario;
+      atualizarBotoesFiltro(usuario);
+      renderizarPecas();
+    }
+
+    function resetarTudo() {
+      pecas = criarPecasOriginais();
+      salvar();
+      renderizar();
+    }
+
+    function marcarTudo(valor) {
+      pecas = pecas.map(peca => ({ ...peca, comprado: valor }));
+      salvar();
+      renderizar();
+    }
+
+    function alternarCompra(id) {
+      pecas = pecas.map(peca => peca.id === id ? { ...peca, comprado: !peca.comprado } : peca);
+      salvar();
+      renderizar();
+    }
+
+    function calcularTotais(lista) {
+      const total = lista.reduce((soma, peca) => soma + peca.preco, 0);
+      const comprado = lista.filter(peca => peca.comprado).reduce((soma, peca) => soma + peca.preco, 0);
+      return {
+        total,
+        comprado,
+        falta: total - comprado,
+        qtdComprada: lista.filter(peca => peca.comprado).length,
+        qtdTotal: lista.length
+      };
+    }
+
+    function renderizarStats() {
+      const totais = calcularTotais(pecas);
+      document.getElementById('totalBuild').textContent = dinheiro.format(totais.total);
+      document.getElementById('totalComprado').textContent = dinheiro.format(totais.comprado);
+      document.getElementById('totalFalta').textContent = dinheiro.format(totais.falta);
+      document.getElementById('pecasCompradas').textContent = totais.qtdComprada + '/' + totais.qtdTotal;
+    }
+
+    function renderizarPessoas() {
+      const area = document.getElementById('peopleCards');
+      area.innerHTML = '';
+
+      ['Danilo', 'Joao'].forEach(pessoa => {
+        const lista = pecas.filter(peca => peca.pessoa === pessoa);
+        const totais = calcularTotais(lista);
+        const progresso = totais.total > 0 ? (totais.comprado / totais.total) * 100 : 0;
+        const letra = pessoa === 'Joao' ? 'J' : 'D';
+        const classe = pessoa === 'Joao' ? 'j' : 'd';
+
+        area.innerHTML += `
+          <div class="person-card">
+            <div class="person-top">
+              <div class="person-name">
+                <div class="avatar mini-avatar ${classe}">${letra}</div>
+                <h2>${nomeBonito(pessoa)}</h2>
+              </div>
+              <span class="badge">${totais.qtdComprada}/${totais.qtdTotal} compradas</span>
+            </div>
+            <div class="progress"><div style="width: ${progresso}%"></div></div>
+            <div class="mini-grid">
+              <div><small>Total</small><b>${dinheiro.format(totais.total)}</b></div>
+              <div><small>Comprou</small><b>${dinheiro.format(totais.comprado)}</b></div>
+              <div><small>Falta</small><b>${dinheiro.format(totais.falta)}</b></div>
+            </div>
           </div>
+        `;
+      });
+    }
+
+    function renderizarChecklist() {
+      const area = document.getElementById('compatChecklist');
+      area.innerHTML = `
+        <div class="check-card ok">
+          <h3>✅ Cada um tem um PC completo</h3>
+          <p>Danilo tem a build completa e João também tem a mesma build completa: processador, placa-mãe, 2 memórias, SSD, fonte, gabinete, fans e refrigeração.</p>
         </div>
-      </div>`;
-  });
+        <div class="check-card warn">
+          <h3>⚠️ Atenção no water cooler</h3>
+          <p>O gabinete Husky Dome 210 preto pode não aceitar water cooler 360mm. Antes de comprar, confirme se quer trocar o water cooler por 240mm ou trocar o gabinete.</p>
+        </div>
+      `;
+    }
 
-  updateStats();
-}
+    function renderizarPecas() {
+      const area = document.getElementById('partsList');
+      const lista = filtroAtual === 'Todos' ? pecas : pecas.filter(peca => peca.pessoa === filtroAtual);
+      area.innerHTML = '';
 
-function comprar(key, index) {
-  const state = getState(currentUser);
-  state[key] = true;
-  setState(currentUser, state);
-  renderProducts();
-  renderOther();
-  showToast("✅ " + produtos[index].nome + " marcado!", "green");
-}
+      lista.forEach(peca => {
+        area.innerHTML += `
+          <article class="part-card ${peca.comprado ? 'bought' : ''}">
+            <div class="part-main">
+              <div class="image-box">
+                <img src="${peca.imagem}" alt="${peca.nome}" onerror="this.src='https://via.placeholder.com/400x400?text=Produto'" />
+              </div>
+              <div>
+                <div class="tags">
+                  <span class="tag blue">${peca.categoria}</span>
+                  <span class="tag">${peca.loja}</span>
+                  <span class="tag">${nomeBonito(peca.pessoa)}</span>
+                  ${peca.comprado ? '<span class="tag green">Comprado</span>' : ''}
+                </div>
+                <h3 class="part-title">${peca.nome}</h3>
+                <div class="price">${dinheiro.format(peca.preco)}</div>
+              </div>
+            </div>
+            <div class="part-actions">
+              <div class="fake-button btn-gray">${nomeBonito(peca.pessoa)}</div>
+              <button class="${peca.comprado ? 'btn-green' : 'btn-dark'}" type="button" onclick="alternarCompra('${peca.id}')">
+                ${peca.comprado ? 'Comprado' : 'Marcar comprado'}
+              </button>
+              <a class="button btn-gray" href="${peca.link}" target="_blank">Abrir link</a>
+            </div>
+          </article>
+        `;
+      });
+    }
 
-function desmarcar(key) {
-  const state = getState(currentUser);
-  delete state[key];
-  setState(currentUser, state);
-  renderProducts();
-  renderOther();
-  showToast("↩ Marcação removida", "orange");
-}
+    function renderizar() {
+      renderizarStats();
+      renderizarPessoas();
+      renderizarChecklist();
+      renderizarPecas();
+    }
 
-function updateStats() {
-  const myState = getState(currentUser);
-  let pago = 0, count = 0;
-  produtos.forEach(p => { if (myState[p.key]) { pago += p.preco; count++; } });
-  const falta = TOTAL - pago;
-  const pct = TOTAL > 0 ? Math.round((pago / TOTAL) * 100) : 0;
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+      const texto = btn.textContent.trim();
+      btn.dataset.filtro = texto === 'João' ? 'Joao' : texto;
+    });
 
-  document.getElementById("statTotal").textContent = "R$ " + fmtBRL(TOTAL);
-  document.getElementById("statPago").textContent = "R$ " + fmtBRL(pago);
-  document.getElementById("statFalta").textContent = "R$ " + fmtBRL(falta);
-  document.getElementById("statItems").textContent = count + " / " + produtos.length;
-  document.getElementById("progFill").style.width = pct + "%";
-  document.getElementById("progPct").textContent = pct + "%";
-}
-
-function renderOther() {
-  const other = currentUser === "DANILO" ? "JOAO" : "DANILO";
-  const otherState = getState(other);
-  const bought = [], missing = [];
-  let spent = 0;
-  produtos.forEach(p => {
-    if (otherState[p.key]) { bought.push(p); spent += p.preco; }
-    else missing.push(p);
-  });
-
-  document.getElementById("otherBoughtCount").textContent = bought.length;
-  document.getElementById("otherMissingCount").textContent = missing.length;
-  document.getElementById("otherSpent").textContent = "R$ " + fmtBRL(spent);
-
-  document.getElementById("otherBoughtList").innerHTML = bought.length === 0
-    ? `<div class="empty">Nenhum item comprado ainda</div>`
-    : bought.map(p => `<div class="other-item bi"><span>✓ ${p.nome}</span><span class="other-item-price">R$ ${fmtBRL(p.preco)}</span></div>`).join("");
-
-  document.getElementById("otherMissingList").innerHTML = missing.length === 0
-    ? `<div class="empty">🎉 Tudo comprado!</div>`
-    : missing.map(p => `<div class="other-item mi"><span>◦ ${p.nome}</span><span class="other-item-price">R$ ${fmtBRL(p.preco)}</span></div>`).join("");
-}
-
-function fmtBRL(n) {
-  return n.toFixed(2).replace(".", ",");
-}
-
-let toastTimer;
-function showToast(msg, type = "green") {
-  const t = document.getElementById("toast");
-  t.textContent = msg;
-  t.className = "toast " + type;
-  t.classList.add("show");
-  clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => t.classList.remove("show"), 3000);
-}
-</script>
+    renderizar();
+  </script>
 </body>
 </html>
